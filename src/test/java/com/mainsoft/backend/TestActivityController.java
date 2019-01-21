@@ -33,148 +33,121 @@ import com.mainsoft.backend.service.ActivityService;
 /**
  * integration tests for Activitycontroller
  * 
- * */
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestPropertySource("/application-test.properties")
-@Sql(value= {"/testdb/create-test-before.sql"}, executionPhase = ExecutionPhase.BEFORE_TEST_METHOD)
-@Sql(value= {"/testdb/delete-test-after.sql"}, executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
+@Sql(value = { "/testdb/create-test-before.sql" }, executionPhase = ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(value = { "/testdb/delete-test-after.sql" }, executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
 public class TestActivityController {
-	
+
 	@Autowired
 	private MockMvc mockMvc;
-	
+
 	@Autowired
 	private AuthController authController;
-	
+
 	@Autowired
 	private ActivityService activityService;
-		
+
 	private String token;
-	
+
 	public void setUp() {
 		Login login = new Login();
 		login.setUsername("valera");
 		login.setPassword("valera");
-		
+
 		JwtResponse response = (JwtResponse) authController.authenticateUser(login).getBody();
-		
-		token = response.toString();		
-	
+
+		token = response.toString();
+
 	}
-	
-	
-	
-	
 
 	@Test
 	public void testGetActivityWithOutAuthorizationToken() throws Exception {
-		
-		mockMvc.perform(get("/api/activity/{id}",1)
-				   .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				   .andExpect(status().isUnauthorized());
-		
+
+		mockMvc.perform(get("/api/activity/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(status().isUnauthorized());
+
 	}
-	
+
 	@Test
 	public void testGetActivityWithIncorrectId() throws Exception {
 		setUp();
-		
-		mockMvc.perform(get("/api/activity/{id}",100000)
-				   .header("Authorization", token)
-				   .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				   .andExpect(status().isNotFound());
-		
+
+		mockMvc.perform(get("/api/activity/{id}", 100000).header("Authorization", token)
+				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andExpect(status().isNotFound());
+
 	}
-	
+
 	@Test
 	public void testGetActivityWithAuthorizationToken() throws Exception {
-		
+
 		setUp();
-		
-		Activity activity = activityService.getActivityById(1L); 
-		
-		mockMvc.perform(get("/api/activity/{id}",1)
-				   .header("Authorization", token)
-				   .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				   .andExpect(status().isOk())
-				   .andExpect(jsonPath("$.id").value(activity.getId()))
-				   .andExpect(jsonPath("$.distance").value(activity.getDistance()))
-				   .andExpect(jsonPath("$.runTime").value(activity.getRunTime()))
-				   .andExpect(jsonPath("$.runDate").isNotEmpty());
-				  
-				  			 
-		
+
+		Activity activity = activityService.getActivityById(1L);
+
+		mockMvc.perform(get("/api/activity/{id}", 1).header("Authorization", token)
+				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andExpect(status().isOk())
+				.andExpect(jsonPath("$.id").value(activity.getId()))
+				.andExpect(jsonPath("$.distance").value(activity.getDistance()))
+				.andExpect(jsonPath("$.runTime").value(activity.getRunTime()))
+				.andExpect(jsonPath("$.runDate").isNotEmpty());
+
 	}
-	
+
 	@Test
 	public void testGetAllActivityByUserName() throws Exception {
-		
+
 		setUp();
-		mockMvc.perform(get("/api/activities/{username}","valera")
-				   .header("Authorization", token)
-				   .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				   .andExpect(status().isOk());
-				   
-				  
-				  					
+		mockMvc.perform(get("/api/activities/{username}", "valera").header("Authorization", token)
+				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andExpect(status().isOk());
+
 	}
-	
+
 	@Test
 	public void testPostActivityByUserName() throws Exception {
-		
+
 		setUp();
-		
+
 		String pattern = "yyyy-MM-dd";
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
 		Date date = simpleDateFormat.parse("2019-01-28");
-		
+
 		Activity activity = new Activity();
 		activity.setDistance(7.5F);
 		activity.setRunDate(date);
 		activity.setRunTime(50);
-		
-		mockMvc.perform(post("/api/activity/{username}","valera")
-				   .header("Authorization", token)
-				   .content(JsonUtil.toJson(activity))
-				   .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				   .andExpect(status().isCreated())
-				   .andExpect(jsonPath("$.id").isNotEmpty())
-				   .andExpect(jsonPath("$.distance").value(activity.getDistance()))
-				   .andExpect(jsonPath("$.runTime").value(activity.getRunTime()))
-				   .andExpect(jsonPath("$.runDate").value(simpleDateFormat.format(activity.getRunDate())));
-				  
-				   
-				  
-				  					
+
+		mockMvc.perform(post("/api/activity/{username}", "valera").header("Authorization", token)
+				.content(JsonUtil.toJson(activity)).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(status().isCreated()).andExpect(jsonPath("$.id").isNotEmpty())
+				.andExpect(jsonPath("$.distance").value(activity.getDistance()))
+				.andExpect(jsonPath("$.runTime").value(activity.getRunTime()))
+				.andExpect(jsonPath("$.runDate").value(simpleDateFormat.format(activity.getRunDate())));
+
 	}
-	
+
 	@Test
 	public void testDeleteActivityWithCorrectId() throws Exception {
-		
+
 		setUp();
-		
-		mockMvc.perform(delete("/api/activity/{id}",1)
-				   .header("Authorization", token)
-				   .contentType(MediaType.APPLICATION_JSON_VALUE))
-				   .andExpect(status().isOk());
-				  			  
-				  					
+
+		mockMvc.perform(delete("/api/activity/{id}", 1).header("Authorization", token)
+				.contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk());
+
 	}
-	
+
 	@Test
 	public void testDeleteActivityWithIncorrectId() throws Exception {
-		
+
 		setUp();
-		
-		mockMvc.perform(delete("/api/activity/{id}",100000)
-				   .header("Authorization", token)
-				   .contentType(MediaType.APPLICATION_JSON_VALUE))
-				   .andExpect(status().isNotFound());
-				  			  
-				  					
+
+		mockMvc.perform(delete("/api/activity/{id}", 100000).header("Authorization", token)
+				.contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isNotFound());
+
 	}
 
 }

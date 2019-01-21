@@ -35,61 +35,53 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/api/auth")
 @Api("Api for registration and login")
-public class AuthController{
+public class AuthController {
 
-    @Autowired
-    AuthenticationManager authenticationManager;
+	@Autowired
+	AuthenticationManager authenticationManager;
 
-    @Autowired
-    UserRepository userRepository;
+	@Autowired
+	UserRepository userRepository;
 
-    @Autowired
-    RoleRepository roleRepository;
+	@Autowired
+	RoleRepository roleRepository;
 
-    @Autowired
-    PasswordEncoder encoder;
+	@Autowired
+	PasswordEncoder encoder;
 
-    @Autowired
-    JwtProvider jwtProvider;
+	@Autowired
+	JwtProvider jwtProvider;
 
-    @PostMapping("/login")
-    @ApiOperation("Returns token if user exist")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody Login login) {
+	@PostMapping("/login")
+	@ApiOperation("Returns token if user exist")
+	public ResponseEntity<?> authenticateUser(@Valid @RequestBody Login login) {
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        login.getUsername(),
-                        login.getPassword()
-                )
-        );
+		Authentication authentication = authenticationManager
+				.authenticate(new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword()));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String jwt = jwtProvider.generateJwtToken(authentication);
-        return ResponseEntity.ok(new JwtResponse(jwt));
-    }
+		String jwt = jwtProvider.generateJwtToken(authentication);
+		return ResponseEntity.ok(new JwtResponse(jwt));
+	}
 
-    @PostMapping("/register")
-    @ApiOperation("User registration if user not exist")
-    public ResponseEntity<String> registerUser(@Valid @RequestBody Login login) {
-        if(userRepository.existsByUsername(login.getUsername())) {
-            return new ResponseEntity<String>("Fail -> Username is already taken!",
-                    HttpStatus.BAD_REQUEST);
-        }
+	@PostMapping("/register")
+	@ApiOperation("User registration if user not exist")
+	public ResponseEntity<String> registerUser(@Valid @RequestBody Login login) {
+		if (userRepository.existsByUsername(login.getUsername())) {
+			return new ResponseEntity<String>("Fail -> Username is already taken!", HttpStatus.BAD_REQUEST);
+		}
 
-        // Creating user's account
-        User user = new User(login.getUsername(), encoder.encode(login.getPassword()));
+		// Creating user's account
+		User user = new User(login.getUsername(), encoder.encode(login.getPassword()));
 
-       
-        Set<Role> roles = new HashSet<Role>();
-       
-        roles.add(roleRepository.findByName(RoleName.ROLE_USER));
+		Set<Role> roles = new HashSet<Role>();
 
-        
-        
-        user.setRoles(roles);
-        userRepository.save(user);
+		roles.add(roleRepository.findByName(RoleName.ROLE_USER));
 
-        return ResponseEntity.ok().body("User registered successfully!");
-    }
+		user.setRoles(roles);
+		userRepository.save(user);
+
+		return ResponseEntity.ok().body("User registered successfully!");
+	}
 }

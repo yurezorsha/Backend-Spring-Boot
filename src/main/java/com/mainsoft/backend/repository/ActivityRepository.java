@@ -11,10 +11,9 @@ import org.springframework.stereotype.Repository;
 import com.mainsoft.backend.entity.Activity;
 import com.mainsoft.backend.entity.Report;
 
-
 @Repository
 public interface ActivityRepository extends JpaRepository<Activity, Long> {
-	
+
 	@Query("SELECT a FROM Activity  a where a.user.username = :username")
 	List<Activity> findAllByUserName(@Param("username") String username);
 

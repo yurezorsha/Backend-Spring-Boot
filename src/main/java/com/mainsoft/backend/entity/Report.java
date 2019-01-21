@@ -5,29 +5,27 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class Report {
-	
+
 	private String title;
-	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd", timezone="Europe/Minsk")
+
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Europe/Minsk")
 	private Date startWeek;
-	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd", timezone="Europe/Minsk")
+
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Europe/Minsk")
 	private Date endWeek;
-	
+
 	private Double averageSpeed;
-	
+
 	private Double averageTime;
-	
+
 	private Double totalDistance;
-		
-	
+
 	public Report() {
-		
+
 	}
 
-	public Report(Date startWeek, Date endWeek, Double averageSpeed, Double averageTime,
-			Double totalDistance) {
-	
+	public Report(Date startWeek, Date endWeek, Double averageSpeed, Double averageTime, Double totalDistance) {
+
 		this.startWeek = startWeek;
 		this.endWeek = endWeek;
 		this.averageSpeed = averageSpeed;
@@ -82,8 +80,5 @@ public class Report {
 	public void setTotalDistance(Double totalDistance) {
 		this.totalDistance = totalDistance;
 	}
-	
-	
-	
 
 }

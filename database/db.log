@@ -3,22 +3,3 @@ alter table roles drop constraint UK_nb4h0p6txrmfc0xbrd1kglp9t
 alter table roles add constraint UK_nb4h0p6txrmfc0xbrd1kglp9t unique (name)
 alter table users drop constraint UKr43af9ap4edm43mmtq01oddj6
 alter table users add constraint UKr43af9ap4edm43mmtq01oddj6 unique (username)
-DISCONNECT
-/*C4*/SET SCHEMA PUBLIC
-DISCONNECT
-/*C5*/SET SCHEMA PUBLIC
-DISCONNECT
-/*C6*/SET SCHEMA PUBLIC
-DISCONNECT
-/*C7*/SET SCHEMA PUBLIC
-DISCONNECT
-/*C8*/SET SCHEMA PUBLIC
-DISCONNECT
-/*C9*/SET SCHEMA PUBLIC
-DISCONNECT
-/*C10*/SET SCHEMA PUBLIC
-DISCONNECT
-/*C11*/SET SCHEMA PUBLIC
-DISCONNECT
-/*C12*/SET SCHEMA PUBLIC
-DISCONNECT

@@ -20,48 +20,45 @@ import com.mainsoft.backend.service.UserDetailsServiceImpl;
 
 public class JwtAuthTokenFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JwtProvider tokenProvider;
+	@Autowired
+	private JwtProvider tokenProvider;
 
-    @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+	@Autowired
+	private UserDetailsServiceImpl userDetailsService;
 
-    private static final Logger logger = LoggerFactory.getLogger(JwtAuthTokenFilter.class);
+	private static final Logger logger = LoggerFactory.getLogger(JwtAuthTokenFilter.class);
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, 
-    								HttpServletResponse response, 
-    								FilterChain filterChain) 
-    										throws ServletException, IOException {
-        try {
-        	
-            String jwt = getJwt(request);
-            if (jwt!=null && tokenProvider.validateJwtToken(jwt)) {
-                String username = tokenProvider.getUserNameFromJwtToken(jwt);
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			throws ServletException, IOException {
+		try {
 
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authentication 
-                = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+			String jwt = getJwt(request);
+			if (jwt != null && tokenProvider.validateJwtToken(jwt)) {
+				String username = tokenProvider.getUserNameFromJwtToken(jwt);
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
-        } catch (Exception e) {
-            logger.error("Can NOT set user authentication -> Message: {}", e);
-        }
+				UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+						userDetails, null, userDetails.getAuthorities());
+				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-        filterChain.doFilter(request, response);
-    }
+				SecurityContextHolder.getContext().setAuthentication(authentication);
+			}
+		} catch (Exception e) {
+			logger.error("Can NOT set user authentication -> Message: {}", e);
+		}
 
-    private String getJwt(HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        	
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-        	return authHeader.replace("Bearer ","");
-        }
+		filterChain.doFilter(request, response);
+	}
 
-        return null;
-    }
+	private String getJwt(HttpServletRequest request) {
+		String authHeader = request.getHeader("Authorization");
 
-	
+		if (authHeader != null && authHeader.startsWith("Bearer ")) {
+			return authHeader.replace("Bearer ", "");
+		}
+
+		return null;
+	}
+
 }

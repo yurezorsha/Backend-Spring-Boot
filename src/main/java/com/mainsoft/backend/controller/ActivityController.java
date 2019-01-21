@@ -23,13 +23,12 @@ import com.mainsoft.backend.service.ActivityService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("api")
 @Api(description = "Api for work with activity, get, post, put, delete, get report.")
 public class ActivityController {
-	
+
 	@Autowired
 	ActivityService activityService;
 
@@ -43,31 +42,31 @@ public class ActivityController {
 	@GetMapping("activities/{username}")
 	@ApiOperation("Returns set of activity by existing username. ")
 	public ResponseEntity<List<Activity>> getAllActivityByUserName(@PathVariable("username") String username) {
-		
+
 		List<Activity> list = activityService.getAllActivityByUserName(username);
 		return new ResponseEntity<List<Activity>>(list, HttpStatus.OK);
 	}
-	
+
 	@GetMapping("activity/report/{username}")
 	@ApiOperation("Returns report for activity for all period by existing username.")
 	public ResponseEntity<List<Report>> getAllActivityReportByUserName(@PathVariable("username") String username) {
-		
+
 		List<Report> list = activityService.getReportByUserName(username);
 		return new ResponseEntity<List<Report>>(list, HttpStatus.OK);
 	}
 
-
 	@PostMapping("activity/{username}")
 	@ApiOperation("Adding activity for existing username.")
-	public ResponseEntity<Activity> addActivityByUserName(@RequestBody Activity a, @PathVariable("username") String username) {
+	public ResponseEntity<Activity> addActivityByUserName(@RequestBody Activity a,
+			@PathVariable("username") String username) {
 		Activity activity = activityService.addActivityByUserName(a, username);
 		return new ResponseEntity<Activity>(activity, HttpStatus.CREATED);
 	}
 
-	
 	@PutMapping("activity/{username}")
 	@ApiOperation("Updating activity by existing username.")
-	public ResponseEntity<Activity> updateActivityByUserName(@RequestBody Activity a,  @PathVariable("username") String username) {
+	public ResponseEntity<Activity> updateActivityByUserName(@RequestBody Activity a,
+			@PathVariable("username") String username) {
 		Activity activity = activityService.updateActivityByUserName(a, username);
 		return new ResponseEntity<Activity>(activity, HttpStatus.OK);
 	}

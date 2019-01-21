@@ -20,30 +20,28 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-
-	
 @Entity
 public class Activity implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
- 
-    private Float distance;
-    
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd", timezone="Europe/Minsk")
-    private Date runDate;
-    
-    private Integer runTime;
-    
-    @ManyToOne
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	private Float distance;
+
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Europe/Minsk")
+	private Date runDate;
+
+	private Integer runTime;
+
+	@ManyToOne
 	@JoinColumn(name = "id_user")
-    @JsonIgnore
+	@JsonIgnore
 	private User user;
 
 	public Activity() {
-	
+
 	}
 
 	public Long getId() {
@@ -85,7 +83,5 @@ public class Activity implements Serializable {
 	public void setUser(User user) {
 		this.user = user;
 	}
-      
-
 
 }
