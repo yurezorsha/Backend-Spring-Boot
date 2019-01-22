@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Collections;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +39,10 @@ public class ActivityServiceImpl implements ActivityService {
 			throw new EntityNotFoundException("User with id: " + username + "wasn't found!");
 		}
 
-		return activityRepository.findAllByUserName(username);
+		List<Activity> lst = activityRepository.findAllByUserName(username);
+		Collections.sort(lst);
+
+		return lst;
 	}
 
 	@Override
@@ -117,6 +121,7 @@ public class ActivityServiceImpl implements ActivityService {
 		}
 
 		List<Activity> lst = activityRepository.findAllByUserName(username);
+		Collections.sort(lst);
 		List<Report> report = new ArrayList<>();
 
 		report = setTitle(createReport(lst, report));

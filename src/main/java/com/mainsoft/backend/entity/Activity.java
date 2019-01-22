@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-public class Activity implements Serializable {
+public class Activity implements Serializable, Comparable<Activity> {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -82,6 +82,12 @@ public class Activity implements Serializable {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	@Override
+	public int compareTo(Activity o) {
+		
+		return getRunDate().compareTo(o.getRunDate());
 	}
 
 }
